@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProvaPub.Dtos;
+using ProvaPub.Mappers;
 using ProvaPub.Models;
-using ProvaPub.Repository;
+using ProvaPub.Context;
 using ProvaPub.Services;
 
 namespace ProvaPub.Controllers
@@ -20,16 +22,17 @@ namespace ProvaPub.Controllers
 	[Route("[controller]")]
 	public class Parte3Controller :  ControllerBase
 	{
+        OrderService _orderService;
+        public Parte3Controller(OrderService orderService) 
+        {
+            _orderService = orderService;
+        }
+
 		[HttpGet("orders")]
-		public async Task<Order> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
+		public async Task<OrderDto> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
 		{
-            var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
-    .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Teste;Trusted_Connection=True;")
-    .Options;
-
-            using var context = new TestDbContext(contextOptions);
-
-            return await new OrderService(context).PayOrder(paymentMethod, paymentValue, customerId);
-		}
+            var order = await _orderService.PayOrder(paymentMethod, paymentValue, customerId);
+            return OrderMapper.ToDto(order);
+        }
 	}
 }

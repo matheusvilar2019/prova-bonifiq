@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProvaPub.Repository;
+using ProvaPub.Context;
 
 #nullable disable
 
 namespace ProvaPub.Migrations
-{
+{   
     [DbContext(typeof(TestDbContext))]
     [Migration("20240926220246_changes")]
     partial class changes

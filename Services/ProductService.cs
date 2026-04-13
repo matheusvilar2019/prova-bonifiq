@@ -1,5 +1,5 @@
 ﻿using ProvaPub.Models;
-using ProvaPub.Repository;
+using ProvaPub.Context;
 
 namespace ProvaPub.Services
 {
@@ -12,9 +12,19 @@ namespace ProvaPub.Services
 			_ctx = ctx;
 		}
 
-		public ProductList  ListProducts(int page)
+		public PagedResultList<Product> ListProducts(int page)
 		{
-			return new ProductList() {  HasNext=false, TotalCount =10, Products = _ctx.Products.ToList() };
+			int pageSize = 10;
+            int totalCount = _ctx.Products.Count();
+            bool hasNext = page * pageSize < totalCount;
+
+            List<Product> products = _ctx.Products
+				.OrderBy(p => p.Id)
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+				.ToList();            
+
+            return new PagedResultList<Product>() {  HasNext = hasNext, TotalCount = totalCount, Items = products };
 		}
 
 	}
